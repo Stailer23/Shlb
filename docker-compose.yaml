@@ -1,0 +1,20 @@
+version: "3"
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: Postgres
+    restart: always
+    env_file:
+      - sett.env
+    ports:
+      - "5000:5432"
+  test_db:
+    image: postgres:15-alpine
+    container_name: Postgres_test
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres_test
+      - POSTGRES_PASSWORD=postgres_test
+      - POSTGRES_DB=postgres_test
+    ports:
+      - "5010:5432"
