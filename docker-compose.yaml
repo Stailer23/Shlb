@@ -5,7 +5,7 @@ services:
     container_name: Postgres
     restart: always
     env_file:
-      - sett.env
+      - .env
     ports:
       - "5000:5432"
   test_db:
