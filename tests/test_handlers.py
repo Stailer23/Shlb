@@ -1,5 +1,5 @@
 import json
-
+import asyncio
 import pytest
 
 
@@ -12,6 +12,10 @@ async def test_create_user(client, get_user_from_database):
     data_from_resp = resp.json()
     assert resp.status_code == 200
     assert data_from_resp["name"] == user_data["name"]
+
+
+# async def test_asd():
+#     c=1
 
 
     # assert data_from_resp["is_active"] is True
