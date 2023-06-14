@@ -38,14 +38,14 @@ async def async_session_test():
     engine = create_async_engine(settings.TEST_DATABASE_URL, future=True, echo=True)
     async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
     yield async_session
-#
-# @pytest.fixture(scope="function", autouse=True)
-# async def clean_tables(async_session_test):
-#     """Clean data in all tables before running test function"""
-#     async with async_session_test() as session:
-#         async with session.begin():
-#             for table_for_cleaning in CLEAN_TABLES:
-#                 await session.execute(f"""TRUNCATE TABLE {table_for_cleaning};""")
+
+@pytest.fixture(scope="function", autouse=True)
+async def clean_tables(async_session_test):
+    """Clean data in all tables before running test function"""
+    async with async_session_test() as session:
+        async with session.begin():
+            for table_for_cleaning in CLEAN_TABLES:
+                await session.execute(f"""TRUNCATE TABLE "{table_for_cleaning}";""")
 #
 #
 #
@@ -94,30 +94,30 @@ async def get_user_from_database(asyncpg_pool):
     async def get_user_from_database_by_uuid(user_id: str):
         async with asyncpg_pool.acquire() as connection:
             return await connection.fetch(
-                """SELECT * FROM users WHERE user_id = $1;""", user_id
+                """SELECT * FROM "user" WHERE user_id = $1;""", user_id
             )
+
+    return get_user_from_database_by_uuid
 #
-#     return get_user_from_database_by_uuid
-# #
-# @pytest.fixture
-# async def create_user_in_database(asyncpg_pool):
-#     async def create_user_in_database(
-#         user_id: str,
-#         name: str,
-#         is_active: bool,
-#         hashed_password: str,
-#
-#     ):
-#         async with asyncpg_pool.acquire() as connection:
-#             return await connection.execute(
-#                 """INSERT INTO users VALUES ($1, $2, $3, $4, $5, $6, $7)""",
-#                 user_id,
-#                 name,
-#                 is_active,
-#                 hashed_password,
-#             )
-#
-#     return create_user_in_database
+@pytest.fixture
+async def create_user_in_database(asyncpg_pool):
+    async def create_user_in_database(
+        user_id: str,
+        name: str,
+        is_active: bool,
+        hashed_password: str,
+
+    ):
+        async with asyncpg_pool.acquire() as connection:
+            return await connection.execute(
+                """INSERT INTO "user" VALUES ($1, $2, $3, $4)""",
+                user_id,
+                name,
+                is_active,
+                hashed_password,
+            )
+
+    return create_user_in_database
 
 
 # def create_test_auth_headers_for_user(email: str) -> dict[str, str]:
