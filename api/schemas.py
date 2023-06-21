@@ -22,3 +22,9 @@ class ShowUser(TunedModel):
 class UserCreate(BaseModel):
     name: str
     password: str
+
+class DeleteUserResponse(BaseModel):
+    deleted_user_id: uuid.UUID
+
+class UpdateUserResponse(BaseModel):
+    updated_user_id: uuid.UUID
